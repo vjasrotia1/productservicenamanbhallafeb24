@@ -14,11 +14,12 @@ fakestoreapi.com/docs
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
-    private Long Id;
+    private Long id;
     private String title;
     private String description;
     private double price;
     private String imageUrl;
     private Category category;
+
 
 }

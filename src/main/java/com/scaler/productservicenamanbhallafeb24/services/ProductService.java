@@ -13,4 +13,16 @@ public interface ProductService {
     Product getSingleProduct(Long productId);
 
     List<Product> getProducts();
+
+    /*
+    in below function Product createProduct();
+    if we do Product createProduct(CreateProductRequestDto requestDto); it would mean that a person is going to create a product
+    only if the createProduct request comes
+    what if there is another request called, say replace product
+     */
+    Product createProduct(String title,
+                          String image,
+                          String description,
+                          String category,
+                          Double price);
 }
