@@ -5,17 +5,33 @@ Cont. means Controller going forward
 this cont. will be the first entry point where evry client will be sending the rquest
 it will receive the request and pass it to the relevant server
 
-how to tell spring boot, that this is controller class can receive the request
+how to tell spring boot, that this is controller class can receive the HTTP request
 using @RESTController, this is how we can create a controller
  */
 
 import com.scaler.productservicenamanbhallafeb24.dtos.CreateProductRequestDto;
+import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
 import com.scaler.productservicenamanbhallafeb24.services.FakeStoreProductService;
 import com.scaler.productservicenamanbhallafeb24.services.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
+/*
+@RestController
+
+Tells Spring:
+
+“Whatever this method returns, write it to HTTP response body.”
+
+Spring says:
+
+“I must serialize this object before sending it.”
+Serialization is the process of converting a Java object into JSON so it can be sent in an HTTP response
+ */
 @RestController
 public class ProductController {
 
@@ -34,7 +50,7 @@ public class ProductController {
      */
     //private ProductService productService = new FakeStoreProductService();
 
-    private ProductService productService   ;
+    private ProductService productService;
 
     public ProductController(ProductService productService, RestTemplate restTemplate) {
         this.productService = productService;
@@ -81,7 +97,7 @@ similarly whenever a (GET request) comes at (/products) endpoint from client/FE,
 because in product service interface, to create a product, i need to give params, what should be the params in service
 
 @RequestBody - This annotation should NOT be in service interfaces
-
+it tells that :
 “Hey Spring, the data for this parameter will come from the HTTP request body (JSON).
 Please convert that JSON into a Java object for me.”
 
@@ -164,12 +180,34 @@ so i need to make sure that i dont have to make a lot  of changes in my code bas
     }
 
     @GetMapping("/products")
-    public void getallProducts(){
+    public List<Product> getallProducts(){
+    return productService.getProducts();
 
     }
-    public void updateProduct(Long productId){
+
+    @GetMapping("/products/categories")
+    public List<Category> getallCategories(){
+        return productService.getCategories();
 
     }
+    @PutMapping("/products/{id}")
+    public Product updateProduct(@PathVariable("id") Long productId,@RequestBody CreateProductRequestDto requestDto){
+    return productService.updateProduct(productId,requestDto);
+    }
 
+
+    @PatchMapping("/products/{id}")
+    public Product patchaProduct(@PathVariable("id") Long productId,@RequestBody CreateProductRequestDto requestDto){
+        return productService.updateProduct(productId,requestDto);
+    }
+    @GetMapping("/products/category/{categoryName}")
+    public List<Product>  getProductsByCategory(@PathVariable("categoryName") String categoryName){
+        return productService.getProductsByCategory(categoryName);
+    }
+    @DeleteMapping("/products/{id}")
+
+    public void deleteProduct(@PathVariable("id") Long  productId){
+    productService.deleteProduct(productId);
+    }
 
 }

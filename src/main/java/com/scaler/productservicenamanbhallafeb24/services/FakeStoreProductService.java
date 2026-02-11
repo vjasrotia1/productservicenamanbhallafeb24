@@ -1,11 +1,13 @@
 package com.scaler.productservicenamanbhallafeb24.services;
 
+import com.scaler.productservicenamanbhallafeb24.dtos.CreateProductRequestDto;
 import com.scaler.productservicenamanbhallafeb24.dtos.FakeStoreProductDto;
+import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -116,8 +118,104 @@ for this as a good practice, we create a separate package as configs--applicatio
 
     @Override
     public List<Product> getProducts() {
-        return null;
+        FakeStoreProductDto[] fakeStoreProducts=restTemplate.getForObject(
+                "https://fakestoreapi.com/products",
+                FakeStoreProductDto[].class);
+        List<Product> products=new ArrayList<>();
+//enhanced for loop means For every element inside fakeStoreProducts, give me one element at a time as a FakeStoreProductDto fakeStoreProductDto
+//        for(FakeStoreProductDto fakeStoreProductDto:fakeStoreProducts){
+//            products.add(fakeStoreProductDto.toproduct());
+//         }
+        for(int i=0; i<fakeStoreProducts.length; i++){
+            FakeStoreProductDto fakeStoreProductDto=fakeStoreProducts[i];
+            products.add(fakeStoreProductDto.toproduct());
+        }
+        return products;
+
+        /*
+        in above
+        Manually fetch element at index i
+        and then Convert FakeStore DTO → Product and add to list
+         */
     }
+
+    @Override
+    public List<Category> getCategories() {
+        String[] fakestorecategories=restTemplate.getForObject(
+                "https://fakestoreapi.com/products/categories",String[].class);
+
+        List<Category> categories=new ArrayList<>();
+        for(String NameofCategory:fakestorecategories){
+        Category category=new Category();
+        category.setTitle(NameofCategory);
+        categories.add(category);
+    }
+        return categories;
+    }
+
+    @Override
+    public Product updateProduct(Long productId, CreateProductRequestDto requestDto) {
+FakeStoreProductDto fakeStoreProductDto=new FakeStoreProductDto();
+fakeStoreProductDto.setCategory(requestDto.getCategory());
+fakeStoreProductDto.setTitle(requestDto.getTitle());
+fakeStoreProductDto.setPrice(requestDto.getPrice());
+fakeStoreProductDto.setImage(requestDto.getImage());
+fakeStoreProductDto.setDescription(requestDto.getDescription());
+
+// FakeStore PUT does not return body → so we have to fetch the updated product
+       restTemplate.put(
+                "https://fakestoreapi.com/products/"+productId,fakeStoreProductDto
+        );
+FakeStoreProductDto updatedproduct=restTemplate.getForObject(
+        "https://fakestoreapi.com/products/"+productId,FakeStoreProductDto.class
+);
+        return updatedproduct.toproduct();
+
+        /*
+        restTemplate.put(...)   // returns void, so u cannot assign it to a response as u are doing above
+        CANT DO THIS
+         FakeStoreProductDto response=restTemplate.put(
+                "https://fakestoreapi.com/products/"+productId,FakeStoreProductDto fakeStoreProductDto
+        );
+         */
+    }
+
+    @Override
+    public Product PatchProduct(Long productId, CreateProductRequestDto requestDto) {
+        FakeStoreProductDto fakeStoreProductDto=new FakeStoreProductDto();
+        fakeStoreProductDto.setCategory(requestDto.getCategory());
+        fakeStoreProductDto.setTitle(requestDto.getTitle());
+        fakeStoreProductDto.setPrice(requestDto.getPrice());
+        fakeStoreProductDto.setImage(requestDto.getImage());
+        fakeStoreProductDto.setDescription(requestDto.getDescription());
+
+        FakeStoreProductDto patchedproduct=restTemplate.patchForObject(
+
+                "https://fakestoreapi.com/products/"+productId,fakeStoreProductDto,FakeStoreProductDto.class
+        );
+        return patchedproduct.toproduct();
+    }
+
+    @Override
+    public List<Product> getProductsByCategory(String categoryName) {
+
+        FakeStoreProductDto[] fakestoreproductsByCategory = restTemplate.getForObject(
+                "https://fakestoreapi.com/products/category/"+categoryName,FakeStoreProductDto[].class
+        );
+        List<Product> productsByCategory=new ArrayList<>();
+        for(FakeStoreProductDto fakestoreproductDto:fakestoreproductsByCategory){
+            productsByCategory.add(fakestoreproductDto.toproduct());
+        }
+        return productsByCategory;
+    }
+
+    @Override
+    public void deleteProduct(Long productId) {
+        restTemplate.delete(
+                "https://fakestoreapi.com/products/"+productId
+        );
+    }
+
 
     @Override
     public Product createProduct(String title,
@@ -139,8 +237,7 @@ for this as a good practice, we create a separate package as configs--applicatio
 "category": "string",
 "image": "http://example.com"
 }
-
-         */
+ */
 FakeStoreProductDto fakeStoreProductDto= new FakeStoreProductDto();
 fakeStoreProductDto.setTitle(title);
 fakeStoreProductDto.setImage(image);
@@ -148,8 +245,7 @@ fakeStoreProductDto.setDescription(description);
 fakeStoreProductDto.setCategory(category);
 fakeStoreProductDto.setPrice(price);
 
-
-        FakeStoreProductDto response = restTemplate.postForObject("https://fakestoreapi.com/products",fakeStoreProductDto, FakeStoreProductDto.class);
+FakeStoreProductDto response = restTemplate.postForObject("https://fakestoreapi.com/products",fakeStoreProductDto, FakeStoreProductDto.class);
         return response.toproduct();
     }
 }
