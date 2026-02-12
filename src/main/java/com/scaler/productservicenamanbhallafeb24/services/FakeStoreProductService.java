@@ -2,8 +2,10 @@ package com.scaler.productservicenamanbhallafeb24.services;
 
 import com.scaler.productservicenamanbhallafeb24.dtos.CreateProductRequestDto;
 import com.scaler.productservicenamanbhallafeb24.dtos.FakeStoreProductDto;
+import com.scaler.productservicenamanbhallafeb24.exceptions.ProductNotFoundException;
 import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -85,11 +87,12 @@ return new RestTemplate
 for this as a good practice, we create a separate package as configs--application configuration class
  */
     @Override
-    public Product getSingleProduct(Long productId) {
+    public Product getSingleProduct(Long productId) throws ProductNotFoundException {
         //most critical part of rest template
-       FakeStoreProductDto fakeStoreProductDto= restTemplate.getForObject(
-                "https://fakestoreapi.com/products/" + productId,
-                FakeStoreProductDto.class);
+
+//       FakeStoreProductDto fakeStoreProductDto= restTemplate.getForObject(
+//                "https://fakestoreapi.com/products/" + productId,
+//                FakeStoreProductDto.class);
         /*
         via "https://fakestoreapi.com/products/" + productId, i will receive a json, and i will hav to convert this json
         into an object of what datatype?
@@ -113,6 +116,15 @@ for this as a good practice, we create a separate package as configs--applicatio
         for this i will create another method in FakeStoreProductDto class
 
          */
+
+        ResponseEntity<FakeStoreProductDto> fakestoreproductresponse= restTemplate.getForEntity(
+                "https://fakestoreapi.com/products/"+productId,FakeStoreProductDto.class);
+
+        FakeStoreProductDto fakeStoreProductDto = fakestoreproductresponse.getBody();
+
+        if(fakeStoreProductDto==null){
+            throw new ProductNotFoundException("product with id: "+ productId+ " doesn't exist. Retry some other product.");
+        }
         return fakeStoreProductDto.toproduct();
     }
 

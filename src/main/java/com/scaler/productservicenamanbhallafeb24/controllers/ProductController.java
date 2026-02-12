@@ -10,11 +10,14 @@ using @RESTController, this is how we can create a controller
  */
 
 import com.scaler.productservicenamanbhallafeb24.dtos.CreateProductRequestDto;
+import com.scaler.productservicenamanbhallafeb24.dtos.ErrorDto;
+import com.scaler.productservicenamanbhallafeb24.exceptions.ProductNotFoundException;
 import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
 import com.scaler.productservicenamanbhallafeb24.services.FakeStoreProductService;
 import com.scaler.productservicenamanbhallafeb24.services.ProductService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -103,7 +106,8 @@ Please convert that JSON into a Java object for me.”
 
 This is only meaningful in a controller, because only controllers deal with HTTP.
      */
-    public Product createProduct(@RequestBody CreateProductRequestDto requestDto){
+
+    public Product createProduct(@RequestBody CreateProductRequestDto requestDto) {
 
 /*
 when u are creating  a product u will need to know the attributes of the product. where will u know those attributes?
@@ -119,13 +123,32 @@ this createproduct method is going to work by calling the service, so in the pro
 add another method as createproduct()
  */
 
-return productService.createProduct(
-        requestDto.getTitle(),
-        requestDto.getImage(),
-        requestDto.getDescription(),
-        requestDto.getCategory(),
-        requestDto.getPrice()
-);
+        return productService.createProduct(
+                requestDto.getTitle(),
+                requestDto.getImage(),
+                requestDto.getDescription(),
+                requestDto.getCategory(),
+                requestDto.getPrice()
+        );
+    }
+/*
+       similarly creating a product with using Response Entity as shown below
+    public ResponseEntity<Product> createProduct(@RequestBody CreateProductRequestDto requestDto) {
+        Product product = productService.createProduct(
+                requestDto.getTitle(),
+                requestDto.getImage(),
+                requestDto.getDescription(),
+                requestDto.getCategory(),
+                requestDto.getPrice()
+        );
+
+        return
+                ResponseEntity.status(HttpStatus.CREATED)
+                        .body(product);
+
+                       status code will be 201 instead of 200
+ */
+
 /*
 can i run the post request from the browser directly?
 NO, so i will open postman, go to post request localhost:8080/products
@@ -140,7 +163,7 @@ into Product Type using toproduct() methods
 
 
  */
-    }
+
     /*
     here, below thru @GetMapping("/products/{id}"), i am telling spring that in the path of my request, there is a variable with
     name as "id", check the value of the variable name "id" and assign that value to the parameter productId
@@ -160,7 +183,7 @@ into Product Type using toproduct() methods
      */
 
 @GetMapping("/products/{id}")
-    public Product getProductDetails(@PathVariable("id") Long productId){
+    public Product getProductDetails(@PathVariable("id") Long productId) throws ProductNotFoundException {
         return productService.getSingleProduct(productId);
         //once this is done, next thing is to implement function getsingleproduct(Long id) in fakestoreproductservice
         /*
@@ -180,9 +203,14 @@ so i need to make sure that i dont have to make a lot  of changes in my code bas
     }
 
     @GetMapping("/products")
-    public List<Product> getallProducts(){
-    return productService.getProducts();
+//    public List<Product> getallProducts(){
+//    return productService.getProducts();
 
+    public ResponseEntity<List<Product>> getallProducts(){
+
+        List<Product> products= productService.getProducts();
+       // throw new RuntimeException();
+        return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
     @GetMapping("/products/categories")
@@ -204,10 +232,73 @@ so i need to make sure that i dont have to make a lot  of changes in my code bas
     public List<Product>  getProductsByCategory(@PathVariable("categoryName") String categoryName){
         return productService.getProductsByCategory(categoryName);
     }
-    @DeleteMapping("/products/{id}")
+        @DeleteMapping("/products/{id}")
 
-    public void deleteProduct(@PathVariable("id") Long  productId){
-    productService.deleteProduct(productId);
+        public void deleteProduct(@PathVariable("id") Long  productId){
+        productService.deleteProduct(productId);
+        }
+
+
+        //@ExceptionHandler(ProductNotFoundException.class)
+        /*
+        If a request, handled by another controller(say User controller or category controller etc) ,results in a ProductNotFoundException exception, being thrown
+        by its service layer
+
+        then this Exception Handler of this Product Controller class will not be able to handle it
+        whereas Controller advice is global
+        so we will create a new package as advices and create a new class within that as Controller advice and annotate it with
+        @ControllerAdvice
+        and paste this method in that class and remove this method from productcontroller class
+         */
+        /*
+        with this annotation we are telling SPRING that Hey spring, if ever a ProductNotFoundException is thrown from anywhere
+        while handling any API request,
+        SPRING will stop normal execution
+        and looks for @ExceptionHandler(ProductNotFoundException.class)
+        and call the method written just below this annotation
+        this exception may be coming from repository/service or whatever
+
+        Don't send the response as it is to the client, instead call this method and return what this method is returning.
+         */
+        //public ResponseEntity<ErrorDto> handleProductNotFoundException(ProductNotFoundException productNotFoundException){
+        //ErrorDto errorDto = new ErrorDto();
+        /*
+        the line below is basically Extracting the exception message
+        Exception class is extending Throwable class, Throwable class is having this getMessage() method
+        so ProductNotFoundException class gets this methods via inheritance
+
+        public class Throwable {
+    private String detailMessage;
+
+    public String getMessage() {
+        return detailMessage;
     }
+      Take the human-readable explanation stored inside the exception and copy it into the API error response.”
+         */
+        //errorDto.setErrormessage(productNotFoundException.getMessage());
+//        return ResponseEntity
+//                .status(HttpStatus.NOT_FOUND)
+//                .body(errorDto);
+//        }
+
+        /*
+        RESPONSE ENTITY mental model
+        Controller method return type:
+--------------------------------
+        Product              → Spring decides response
+        ResponseEntity<T>    → YOU decide response
+
+        RESPONSE ENTITY  allows a spring controller to fully control the HTTP response(status code,Headers,body)
+
+        it is just like a wrapper around an HTTP response
+         */
+//    @DeleteMapping("/products/{id}")
+//    public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long productId){
+//    productService.deleteProduct(productId);
+//    return ResponseEntity.noContent().build();
+    //status code will be 204 in this case, instead of 200
+//    }
+
+
 
 }

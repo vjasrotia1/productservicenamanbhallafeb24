@@ -1,6 +1,7 @@
 package com.scaler.productservicenamanbhallafeb24.services;
 
 import com.scaler.productservicenamanbhallafeb24.dtos.CreateProductRequestDto;
+import com.scaler.productservicenamanbhallafeb24.exceptions.ProductNotFoundException;
 import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
 
@@ -12,7 +13,7 @@ it is just a class having methods without implementation
  */
 public interface ProductService {
 
-    Product getSingleProduct(Long productId);
+    Product getSingleProduct(Long productId) throws ProductNotFoundException;
 
     List<Product> getProducts();
     List<Category> getCategories();
