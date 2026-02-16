@@ -9,7 +9,7 @@ this class is created in order to write a method which returns obj of REST templ
  */
 
 @Configuration
-//writing @configuration is just a way to tell spring that in this class there are some beans, i hv defined
+//writing @configuration is just a way to tell spring that in this class there are some beans,which  i hv defined
 public class ApplicationConfiguration {
 
     @Bean

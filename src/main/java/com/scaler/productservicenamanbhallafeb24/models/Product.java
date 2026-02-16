@@ -1,5 +1,6 @@
 package com.scaler.productservicenamanbhallafeb24.models;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,12 +14,27 @@ fakestoreapi.com/docs
 @Setter //Setter BTS creates set method for all the attributes
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
-    private Long id;
+@Entity
+public class Product extends BaseModel {
+    //private Long id;
     private String title;
     private String description;
     private double price;
     private String imageUrl;
+        @ManyToOne(cascade = CascadeType.PERSIST)
+    /*
+    cascade simply says if something happens to product, what to do to the category of that product
+CascadeType.PERSIST means
+if someone is trying to save a new product and that product has a category that doesnot exist yet in my database
+then first store that category and then store that product in database
+
+CascadeType.REMOVE
+means
+if someone is trying to remove the product, that product is associated to a category, it says delete that category too
+but that is a stupid idea
+instead it makes sense in Category class, that if u are trying to remove a category
+all thr products corresponding to this category should also get removed
+     */
     private Category category;
 
 

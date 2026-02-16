@@ -16,6 +16,7 @@ import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
 import com.scaler.productservicenamanbhallafeb24.services.FakeStoreProductService;
 import com.scaler.productservicenamanbhallafeb24.services.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,8 +55,12 @@ public class ProductController {
     //private ProductService productService = new FakeStoreProductService();
 
     private ProductService productService;
+/*
+since there are now 2 beans of productservice
+ */
 
-    public ProductController(ProductService productService, RestTemplate restTemplate) {
+
+    public ProductController(@Qualifier("selfProductService") ProductService productService, RestTemplate restTemplate) {
         this.productService = productService;
         this.restTemplate = restTemplate;
         //this rest template obj is exactly same as the rest template obj which we just created in fkstoreprodservice class

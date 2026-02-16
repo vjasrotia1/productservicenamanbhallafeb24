@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service("fakestoreProductService")
 public class FakeStoreProductService implements ProductService {
 
     private RestTemplate restTemplate;
@@ -158,9 +158,9 @@ for this as a good practice, we create a separate package as configs--applicatio
 
         List<Category> categories=new ArrayList<>();
         for(String NameofCategory:fakestorecategories){
-        Category category=new Category();
-        category.setTitle(NameofCategory);
-        categories.add(category);
+        Category prodcategory=new Category();
+        prodcategory.setTitle(NameofCategory);
+        categories.add(prodcategory);
     }
         return categories;
     }
