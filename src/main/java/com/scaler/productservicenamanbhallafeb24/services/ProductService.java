@@ -18,8 +18,18 @@ public interface ProductService {
     List<Product> getProducts();
     List<Category> getCategories();
 
-    Product updateProduct(Long productId, CreateProductRequestDto requestDto);
-    Product PatchProduct(Long productId,CreateProductRequestDto requestDto);
+    Product updateProduct(Long productId,
+                          String title,
+                          String description,
+                          Double price,
+                          String image,
+                          String categorytitle) throws ProductNotFoundException;
+
+    Product patchProduct(Long productId,String title,
+                         String description,
+                         Double price,
+                         String image,
+                         String categorytitle) throws ProductNotFoundException;
 
     List<Product> getProductsByCategory(String categoryName);
 

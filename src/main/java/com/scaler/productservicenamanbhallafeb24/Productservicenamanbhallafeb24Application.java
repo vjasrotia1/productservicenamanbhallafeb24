@@ -3,6 +3,8 @@ package com.scaler.productservicenamanbhallafeb24;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
 /*
 in java, there could be classes like that have multiple variations i.e datatypes are not strict
 e.g  class map<int,int> , class map<int,string> etc.
@@ -30,5 +32,5 @@ public class Productservicenamanbhallafeb24Application {
 
         SpringApplication.run(Productservicenamanbhallafeb24Application.class, args);
     }
-
+//@EnableJpaRepositories
 }

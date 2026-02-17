@@ -19,8 +19,6 @@ Think of it as:
 @Getter
 @Setter
 public class CreateProductRequestDto {
-
-
     private String title;
     private Double price;
     private String description;

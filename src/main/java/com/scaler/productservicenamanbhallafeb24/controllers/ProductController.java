@@ -11,6 +11,8 @@ using @RESTController, this is how we can create a controller
 
 import com.scaler.productservicenamanbhallafeb24.dtos.CreateProductRequestDto;
 import com.scaler.productservicenamanbhallafeb24.dtos.ErrorDto;
+import com.scaler.productservicenamanbhallafeb24.dtos.PatchProductRequestDto;
+import com.scaler.productservicenamanbhallafeb24.dtos.UpdateProductRequestDto;
 import com.scaler.productservicenamanbhallafeb24.exceptions.ProductNotFoundException;
 import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
@@ -224,14 +226,28 @@ so i need to make sure that i dont have to make a lot  of changes in my code bas
 
     }
     @PutMapping("/products/{id}")
-    public Product updateProduct(@PathVariable("id") Long productId,@RequestBody CreateProductRequestDto requestDto){
-    return productService.updateProduct(productId,requestDto);
+    public Product updateProduct(@PathVariable("id") Long productId, @RequestBody UpdateProductRequestDto updateProductRequestDto) throws ProductNotFoundException {
+    return productService.updateProduct(productId,
+            updateProductRequestDto.getTitle(),
+            updateProductRequestDto.getDescription(),
+            updateProductRequestDto.getPrice(),
+            updateProductRequestDto.getImage(),
+            updateProductRequestDto.getCategoryTitle()
+            );
+    /*
+    your controller and service parameter mapping should be the same
+     */
     }
 
 
     @PatchMapping("/products/{id}")
-    public Product patchaProduct(@PathVariable("id") Long productId,@RequestBody CreateProductRequestDto requestDto){
-        return productService.updateProduct(productId,requestDto);
+    public Product patchaProduct(@PathVariable("id") Long productId, @RequestBody PatchProductRequestDto patchProductRequestDto) throws ProductNotFoundException {
+        return productService.patchProduct(productId,
+                patchProductRequestDto.getTitle(),
+                patchProductRequestDto.getDescription(),
+                patchProductRequestDto.getPrice(),
+                patchProductRequestDto.getImage(),
+                patchProductRequestDto.getCategoryTitle());
     }
     @GetMapping("/products/category/{categoryName}")
     public List<Product>  getProductsByCategory(@PathVariable("categoryName") String categoryName){

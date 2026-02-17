@@ -22,6 +22,11 @@ public class Product extends BaseModel {
     private double price;
     private String imageUrl;
         @ManyToOne(cascade = CascadeType.PERSIST)
+        /*
+say, in json i am returning an object of Product and in Product, there is also
+a Category Object and in Category there is an object of List<Product>
+that is why we need JSONignore in Category class
+ */
     /*
     cascade simply says if something happens to product, what to do to the category of that product
 CascadeType.PERSIST means
@@ -36,6 +41,4 @@ instead it makes sense in Category class, that if u are trying to remove a categ
 all thr products corresponding to this category should also get removed
      */
     private Category category;
-
-
 }

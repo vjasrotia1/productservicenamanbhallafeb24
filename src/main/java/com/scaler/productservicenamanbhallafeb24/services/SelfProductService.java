@@ -1,16 +1,13 @@
 package com.scaler.productservicenamanbhallafeb24.services;
 
-import com.scaler.productservicenamanbhallafeb24.dtos.CreateProductRequestDto;
 import com.scaler.productservicenamanbhallafeb24.exceptions.ProductNotFoundException;
 import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
 import com.scaler.productservicenamanbhallafeb24.repositories.CategoryRepository;
 import com.scaler.productservicenamanbhallafeb24.repositories.ProductRepository;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import java.nio.file.ProviderNotFoundException;
 import java.util.List;
 
 @Service("selfProductService")
@@ -27,37 +24,76 @@ private CategoryRepository categoryRepository;
 
     @Override
     public Product getSingleProduct(Long productId) throws ProductNotFoundException {
-        return null;
+        return productRepository.findById(productId)
+                .orElseThrow(()->new ProductNotFoundException("Product not found"));
     }
 
     @Override
     public List<Product> getProducts() {
-        return List.of();
+        return productRepository.findAll();
+
     }
 
     @Override
     public List<Category> getCategories() {
-        return List.of();
+        return categoryRepository.findAll();
     }
 
     @Override
-    public Product updateProduct(Long productId, CreateProductRequestDto requestDto) {
-        return null;
+    public Product updateProduct(Long productId,
+                                 String title,
+                                 String description,
+                                 Double price,
+                                 String image,
+                                 String categoryTitle) throws ProductNotFoundException {
+        Product product= productRepository.findById(productId)
+                .orElseThrow(()->new ProductNotFoundException("Product not present in DB"));
+        product.setTitle(title);
+        product.setDescription(description);
+        product.setPrice(price);
+        product.setImageUrl(image);
+        Category prodcategory = categoryRepository.findByTitle(categoryTitle);
+        if (prodcategory == null) {
+            prodcategory = new Category();
+            prodcategory.setTitle(categoryTitle);
+        }
+        product.setCategory(prodcategory);
+        return productRepository.save(product);
     }
 
     @Override
-    public Product PatchProduct(Long productId, CreateProductRequestDto requestDto) {
-        return null;
+    public Product patchProduct(Long productId,
+                                String title,
+                                String description,
+                                Double price,
+                                String image,
+                                String categoryTitle) throws ProductNotFoundException {
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(()->new ProductNotFoundException("Product not present in DB"));
+            if(title!=null){product.setTitle(title);}
+            if(description!=null){product.setDescription(description);}
+            if(price!=null){product.setPrice(price);}
+            if(image!=null){product.setImageUrl(image);}
+            if(categoryTitle!=null){
+                Category prodcategory=categoryRepository.findByTitle(categoryTitle);
+            if(prodcategory==null){
+                prodcategory=new Category();
+                prodcategory.setTitle(categoryTitle);
+            }
+                product.setCategory(prodcategory);
+            }
+            return  productRepository.save(product) ;
     }
 
     @Override
     public List<Product> getProductsByCategory(String categoryName) {
-        return List.of();
+        return productRepository.findAllByCategory_titleIgnoreCase(categoryName);
     }
 
     @Override
     public void deleteProduct(Long productId) {
-
+    productRepository.deleteById(productId);
     }
 
     @Override

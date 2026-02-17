@@ -3,6 +3,8 @@ package com.scaler.productservicenamanbhallafeb24.repositories;
 import com.scaler.productservicenamanbhallafeb24.models.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 //findByTitle is a custom query
     /*

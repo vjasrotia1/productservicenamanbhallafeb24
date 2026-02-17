@@ -165,23 +165,28 @@ for this as a good practice, we create a separate package as configs--applicatio
         return categories;
     }
 
-    @Override
-    public Product updateProduct(Long productId, CreateProductRequestDto requestDto) {
-FakeStoreProductDto fakeStoreProductDto=new FakeStoreProductDto();
-fakeStoreProductDto.setCategory(requestDto.getCategory());
-fakeStoreProductDto.setTitle(requestDto.getTitle());
-fakeStoreProductDto.setPrice(requestDto.getPrice());
-fakeStoreProductDto.setImage(requestDto.getImage());
-fakeStoreProductDto.setDescription(requestDto.getDescription());
-
+    //@Override
+    public Product updateProduct(Long productId,
+                                 String title,
+                                 String description,
+                                 Double price,
+                                 String image,
+                                 String categoryTitle) {
+//FakeStoreProductDto fakeStoreProductDto=new FakeStoreProductDto();
+//fakeStoreProductDto.setCategory(requestDto.getCategory());
+//fakeStoreProductDto.setTitle(requestDto.getTitle());
+//fakeStoreProductDto.setPrice(requestDto.getPrice());
+//fakeStoreProductDto.setImage(requestDto.getImage());
+//fakeStoreProductDto.setDescription(requestDto.getDescription());
+//
 // FakeStore PUT does not return body → so we have to fetch the updated product
-       restTemplate.put(
-                "https://fakestoreapi.com/products/"+productId,fakeStoreProductDto
-        );
-FakeStoreProductDto updatedproduct=restTemplate.getForObject(
-        "https://fakestoreapi.com/products/"+productId,FakeStoreProductDto.class
-);
-        return updatedproduct.toproduct();
+//       restTemplate.put(
+//                "https://fakestoreapi.com/products/"+productId,fakeStoreProductDto
+//        );
+//FakeStoreProductDto updatedproduct=restTemplate.getForObject(
+//        "https://fakestoreapi.com/products/"+productId,FakeStoreProductDto.class
+//);
+        return null;
 
         /*
         restTemplate.put(...)   // returns void, so u cannot assign it to a response as u are doing above
@@ -192,21 +197,27 @@ FakeStoreProductDto updatedproduct=restTemplate.getForObject(
          */
     }
 
-    @Override
-    public Product PatchProduct(Long productId, CreateProductRequestDto requestDto) {
-        FakeStoreProductDto fakeStoreProductDto=new FakeStoreProductDto();
-        fakeStoreProductDto.setCategory(requestDto.getCategory());
-        fakeStoreProductDto.setTitle(requestDto.getTitle());
-        fakeStoreProductDto.setPrice(requestDto.getPrice());
-        fakeStoreProductDto.setImage(requestDto.getImage());
-        fakeStoreProductDto.setDescription(requestDto.getDescription());
-
-        FakeStoreProductDto patchedproduct=restTemplate.patchForObject(
-
-                "https://fakestoreapi.com/products/"+productId,fakeStoreProductDto,FakeStoreProductDto.class
-        );
-        return patchedproduct.toproduct();
-    }
+//    @Override
+public Product patchProduct(Long productId,
+                            String title,
+                            String description,
+                            Double price,
+                            String image,
+                            String categoryTitle) {
+//        FakeStoreProductDto fakeStoreProductDto=new FakeStoreProductDto();
+//        fakeStoreProductDto.setCategory(requestDto.getCategory());
+//        fakeStoreProductDto.setTitle(requestDto.getTitle());
+//        fakeStoreProductDto.setPrice(requestDto.getPrice());
+//        fakeStoreProductDto.setImage(requestDto.getImage());
+//        fakeStoreProductDto.setDescription(requestDto.getDescription());
+//
+//        FakeStoreProductDto patchedproduct=restTemplate.patchForObject(
+//
+//                "https://fakestoreapi.com/products/"+productId,fakeStoreProductDto,FakeStoreProductDto.class
+//        );
+        //return patchedproduct.toproduct();
+    return  null;
+  }
 
     @Override
     public List<Product> getProductsByCategory(String categoryName) {
