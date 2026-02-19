@@ -1,7 +1,11 @@
 package com.scaler.productservicenamanbhallafeb24.repositories;
 
 import com.scaler.productservicenamanbhallafeb24.models.Product;
+import com.scaler.productservicenamanbhallafeb24.repositories.projections.ProductProjection;
+import com.scaler.productservicenamanbhallafeb24.repositories.projections.ProductWithIdAndTitle;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,5 +68,39 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findAllByTitle(String title);
     List<Product> findAllByCategory_titleIgnoreCase(String categoryName);
+    List<Product> getAllByCategory_Id(Long id);
+    /*
+    below is HQL query
+     */
+    @Query("select product from Product product where product.category.title=:title and product.id=:productId")
+    Product getTheProductByAParticularName(
+        @Param("title") String title,
+        @Param("productId") Long productId
+    );
+    /*
+    advantages of above
+    1. bit more visibility
+    2. say i only need only the title of all products that have particular category id
+     */
 
+    @Query("select product.title as title, product.id as id from Product product where product.category.id=:categoryId")
+    List<ProductProjection> getTitlesOfProductsOfGivenCategory(
+            @Param("categoryId") Long categoryId
+    );
+/*
+here we cant have output as List<String> since we need both product title as well as product id
+this is where projections come into picture
+what are projections?
+Projections are interfaces that hav the exact same GETTER method names as the attributes returned from the query
+so we will create a projections package within the repositories and an interface within that
+
+now lets test it
+
+ */
+    //nativeQuery =true means this is a SQL query
+    @Query(value = "select * from product p where p.id=:id,p.title=:title", nativeQuery= true)
+    List<ProductProjection> dosomething(
+    @Param("id") Long id,
+    @Param("title") String title
+    );
 }

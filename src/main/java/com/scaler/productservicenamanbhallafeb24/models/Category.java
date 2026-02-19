@@ -3,11 +3,13 @@ package com.scaler.productservicenamanbhallafeb24.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ import java.util.List;
 public class Category extends BaseModel {
     //private Long id;
     private String title;
-@OneToMany(mappedBy = "category", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+@OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 @JsonIgnore
 
 //this @jsonignore tells jackson "don't serailise products when serialising a category"
@@ -35,3 +37,8 @@ public class Category extends BaseModel {
     private List<Product> products;
 
 }
+/*
+JPA buddy is a 3rd party plugin which u can use/install
+in settings - top right - search for plugins and search for JPA Buddy
+now JPA Buddy plugin is a handy way to use lot of operations from JPA directly
+ */

@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.FetchMode;
+import org.hibernate.annotations.Fetch;
+import org.springframework.data.repository.cdi.Eager;
 
 /*
 currently below we are creating PRODUCT class as per the attributes mentioned in
@@ -21,8 +24,10 @@ public class Product extends BaseModel {
     private String description;
     private double price;
     private String imageUrl;
-        @ManyToOne(cascade = CascadeType.PERSIST)
+        @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
         /*
+        Here i hv used fetch = FetchType.EAGER because, here Category is a single object, not a list of objects
+        that is why we can eagerly load it without degrading our query performance
 say, in json i am returning an object of Product and in Product, there is also
 a Category Object and in Category there is an object of List<Product>
 that is why we need JSONignore in Category class
@@ -41,4 +46,10 @@ instead it makes sense in Category class, that if u are trying to remove a categ
 all thr products corresponding to this category should also get removed
      */
     private Category category;
+    /*
+    say below i want to store the quantity as well
+    schema change, flyway init migration
+    so we now need to create a schema migration file for that with a next version V2
+     */
+    private  int quantity;
 }

@@ -34,3 +34,11 @@ public class Productservicenamanbhallafeb24Application {
     }
 //@EnableJpaRepositories
 }
+/*
+to maintain version history,i hv to install version history migration tool
+i.e. flyway version tool
+go to maven repository , search flyway and add dependency in pom.xml
+also add flyway Mysql dependency
+we are installing flyway as we want to start maintaining versions of DB
+but at this moment we already hav some Tables in DB
+ */
