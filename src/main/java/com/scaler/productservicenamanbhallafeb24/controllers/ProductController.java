@@ -19,6 +19,7 @@ import com.scaler.productservicenamanbhallafeb24.models.Product;
 import com.scaler.productservicenamanbhallafeb24.services.FakeStoreProductService;
 import com.scaler.productservicenamanbhallafeb24.services.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ import java.util.List;
 
 Tells Spring:
 
-“Whatever this method returns, write it to HTTP response body.”
+“Whatever the methods of this class returns, write it to HTTP response body.”
 
 Spring says:
 
@@ -213,9 +214,11 @@ so i need to make sure that i dont have to make a lot  of changes in my code bas
 //    public List<Product> getallProducts(){
 //    return productService.getProducts();
 
-    public ResponseEntity<List<Product>> getallProducts(){
+    public ResponseEntity<Page<Product>> getallProducts(
+            @RequestParam(defaultValue = "0") Integer PageNumber,
+            @RequestParam(defaultValue = "10") Integer PageSize) throws ProductNotFoundException {
 
-        List<Product> products= productService.getProducts();
+        Page<Product> products= productService.getProducts(PageNumber, PageSize);
        // throw new RuntimeException();
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }

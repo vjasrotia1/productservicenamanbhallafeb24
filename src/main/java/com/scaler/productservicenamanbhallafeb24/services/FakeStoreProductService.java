@@ -5,6 +5,8 @@ import com.scaler.productservicenamanbhallafeb24.dtos.FakeStoreProductDto;
 import com.scaler.productservicenamanbhallafeb24.exceptions.ProductNotFoundException;
 import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -129,7 +131,7 @@ for this as a good practice, we create a separate package as configs--applicatio
     }
 
     @Override
-    public List<Product> getProducts() {
+    public Page<Product> getProducts(Integer pageNumber, Integer PageSize) {
         FakeStoreProductDto[] fakeStoreProducts=restTemplate.getForObject(
                 "https://fakestoreapi.com/products",
                 FakeStoreProductDto[].class);
@@ -142,7 +144,7 @@ for this as a good practice, we create a separate package as configs--applicatio
             FakeStoreProductDto fakeStoreProductDto=fakeStoreProducts[i];
             products.add(fakeStoreProductDto.toproduct());
         }
-        return products;
+        return new PageImpl<>(products);
 
         /*
         in above

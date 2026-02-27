@@ -4,6 +4,7 @@ import com.scaler.productservicenamanbhallafeb24.dtos.CreateProductRequestDto;
 import com.scaler.productservicenamanbhallafeb24.exceptions.ProductNotFoundException;
 import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface ProductService {
 
     Product getSingleProduct(Long productId) throws ProductNotFoundException;
 
-    List<Product> getProducts();
+    Page<Product> getProducts(Integer PageNumber, Integer PageSize) throws ProductNotFoundException;
     List<Category> getCategories();
 
     Product updateProduct(Long productId,

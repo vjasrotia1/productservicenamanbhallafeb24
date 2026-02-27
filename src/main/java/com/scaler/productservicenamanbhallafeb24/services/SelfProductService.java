@@ -5,6 +5,9 @@ import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
 import com.scaler.productservicenamanbhallafeb24.repositories.CategoryRepository;
 import com.scaler.productservicenamanbhallafeb24.repositories.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.ProviderNotFoundException;
@@ -29,8 +32,11 @@ private CategoryRepository categoryRepository;
     }
 
     @Override
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+    public Page<Product> getProducts(Integer pageNumber, Integer  pageSize) {
+        Sort sort= Sort.by("imageUrl").descending().and(Sort.by("name").ascending());
+        return productRepository.findAll(
+                PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending())
+        );
 
     }
 
