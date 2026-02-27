@@ -63,7 +63,7 @@ since there are now 2 beans of productservice
  */
 
 
-    public ProductController(@Qualifier("selfProductService") ProductService productService, RestTemplate restTemplate) {
+    public ProductController(@Qualifier("fakestoreProductService") ProductService productService, RestTemplate restTemplate) {
         this.productService = productService;
         this.restTemplate = restTemplate;
         //this rest template obj is exactly same as the rest template obj which we just created in fkstoreprodservice class

@@ -42,3 +42,14 @@ also add flyway Mysql dependency
 we are installing flyway as we want to start maintaining versions of DB
 but at this moment we already hav some Tables in DB
  */
+
+/*
+currently redis is running on your local machine, by default your application
+will be able to connect with it
+but if u are running REDIS on a third party server say AWS, then we will need
+to provide some configuration to your code/application regarding where your redis
+is running and from where u hv to make/establish a connection
+
+so we go to application properties
+
+ */

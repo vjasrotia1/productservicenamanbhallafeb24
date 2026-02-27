@@ -7,6 +7,7 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -35,7 +36,7 @@ Hibernate/ORM/JPA doesnt automatically scan parent classes unles you explicitly 
 Meaning of MappedSuperclass
 “This class itself is not a table, but its fields should be mapped into child entity tables.”
  */
-public class BaseModel {
+public class BaseModel implements Serializable {
 //Note : even the Private attributes are present in the Child Classes
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

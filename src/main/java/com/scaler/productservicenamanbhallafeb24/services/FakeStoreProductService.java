@@ -7,6 +7,7 @@ import com.scaler.productservicenamanbhallafeb24.models.Category;
 import com.scaler.productservicenamanbhallafeb24.models.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,8 +19,12 @@ import java.util.List;
 public class FakeStoreProductService implements ProductService {
 
     private RestTemplate restTemplate;
-    public FakeStoreProductService(RestTemplate restTemplate){
+    //here i will inject the redis template object
+    private RedisTemplate<String,Object> redisTemplate;
+    public FakeStoreProductService(RestTemplate restTemplate,
+                                   RedisTemplate redisTemplate) {
         this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
     }
 /*
 we will first implement getSingleProduct API,
@@ -118,6 +123,31 @@ for this as a good practice, we create a separate package as configs--applicatio
         for this i will create another method in FakeStoreProductDto class
 
          */
+        //REDIS
+        //before make a call to fakestore, first check in redis if the products
+        //with the given id is present or not
+        //how to do that??
+        Product product=(Product) redisTemplate.opsForHash().get("PRODUCTS","PRODUCT_"+ productId);
+        //in above i typecasted object into Product
+        if(product!=null){
+            return product;
+            //this is cache hit, that data is present in Redis
+        }
+
+        //here i can use this redistemplate to make a call
+        /*
+        redis actually works on <key,value> pair, how the keys will get associated inside any DS ??
+        HashMap generates the hash value of that key and then store it
+        redis also stores the hash of the key and for that it uses a function called opsforHash
+
+        redis is like a cluster, in this cluster, we can have different hashmaps, so whenever u want the data
+        u need to define the name of the MAP in redis
+        lets say name of the map is "PRODUCTS" as shown above
+         */
+                //for making rest calls, i need resttemplate
+        //similarly for making redis call, i need redistemplate
+
+//else cache miss
 
         ResponseEntity<FakeStoreProductDto> fakestoreproductresponse= restTemplate.getForEntity(
                 "https://fakestoreapi.com/products/"+productId,FakeStoreProductDto.class);
@@ -127,7 +157,13 @@ for this as a good practice, we create a separate package as configs--applicatio
         if(fakeStoreProductDto==null){
             throw new ProductNotFoundException("product with id: "+ productId+ " doesn't exist. Retry some other product.");
         }
-        return fakeStoreProductDto.toproduct();
+
+        product= fakeStoreProductDto.toproduct();
+        //store this above product in cache
+        redisTemplate.opsForHash().put("PRODUCTS","PRODUCT_"+ productId, product);
+        return product;
+        //"PRODUCT_"+ productId - this basically means converting long id into string
+        //because my key Datatype was String
     }
 
     @Override
